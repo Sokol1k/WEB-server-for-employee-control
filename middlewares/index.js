@@ -1,9 +1,12 @@
-const router = require('express').Router();
+const router = require('express').Router()
 
-const register = require('./auth/Register');
-const login = require('./auth/Login');
+const verifyToken = require('./verifyToken')
+const register = require('./auth/Register')
+const login = require('./auth/Login')
 
-router.post('/auth/register', register);
-router.post('/auth/login', login);
+router.use(verifyToken)
 
-module.exports = router;
+router.post('/auth/register', register)
+router.post('/auth/login', login)
+
+module.exports = router

@@ -7,7 +7,7 @@ const registerValidation = (data) => {
     email: Joi.string().email().required()
   })
 
-  return schema.validate(data);
+  return schema.validate(data)
 }
 
 const loginValidation = (data) => {
@@ -16,7 +16,7 @@ const loginValidation = (data) => {
     password: Joi.string().min(6).max(255).required(),
   })
 
-  return schema.validate(data);
+  return schema.validate(data)
 }
 
-module.exports = { registerValidation, loginValidation };
+module.exports = { registerValidation, loginValidation }

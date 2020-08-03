@@ -31,7 +31,7 @@ const register = async function (req, res) {
 
     res.status(201).send({
       message: "User has been registered!"
-    });
+    })
 
   } catch (err) {
     res.status(500).send(err)
