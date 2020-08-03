@@ -4,11 +4,16 @@ const mongoose = require('mongoose')
 
 const app = express()
 
+app.use(express.json())
+
+app.use('/api', require('./middlewares'))
+app.use('/api', require('./routes'))
+
 const PORT = config.get('port') || 5000
 
 async function start() {
   try {
-    
+
     await mongoose.connect(config.get('mongoUri'), {
       useNewUrlParser: true,
       useUnifiedTopology: true,
