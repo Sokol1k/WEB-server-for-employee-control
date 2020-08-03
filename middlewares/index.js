@@ -11,5 +11,6 @@ router.post('/auth/register', register)
 router.post('/auth/login', login)
 
 router.post('/employee', employee.create)
+router.post('/employee/:id', employee.update)
 
 module.exports = router
