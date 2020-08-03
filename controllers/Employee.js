@@ -67,6 +67,16 @@ const update = async function (req, res) {
 const destroy = async function (req, res) {
   try {
 
+    const employee = await Employee.deleteOne({ _id: req.params.id })
+
+    if (!employee.deletedCount) {
+      res.status(400).send({
+        message: 'There is no such employee!'
+      })
+    } else {
+      res.send({ message: 'Employee has been deleted!' })
+    }
+
   } catch (err) {
     res.status(500).send(err)
   }
