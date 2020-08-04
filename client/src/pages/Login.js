@@ -3,6 +3,7 @@ import loginValidator from '../validation/login'
 import { useService } from '../hooks/service'
 import { connect } from 'react-redux'
 import { showAlert } from '../store/alert/actions'
+import { loader } from '../store/loader/actions'
 
 function Login(props) {
 
@@ -63,6 +64,8 @@ function Login(props) {
 
     event.preventDefault()
 
+    props.loader(true)
+
     clearValid()
 
     const isValid = loginValidator(login)
@@ -84,12 +87,20 @@ function Login(props) {
             message: err.data.message,
             isShow: true,
           })
+        } else {
+          props.showAlert({
+            type: 'danger',
+            message: 'Something went wrong, please try again!',
+            isShow: true,
+          })
         }
       }
 
     } else {
       showNotValidData(isValid)
     }
+
+    props.loader(false)
 
   }
 
@@ -140,7 +151,8 @@ function Login(props) {
 }
 
 const mapDispatchToProps = {
-  showAlert
+  showAlert,
+  loader
 }
 
 export default connect(null, mapDispatchToProps)(Login)

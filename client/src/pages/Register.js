@@ -3,6 +3,7 @@ import registerValidator from '../validation/register'
 import { useService } from '../hooks/service'
 import { connect } from 'react-redux'
 import { showAlert } from '../store/alert/actions'
+import { loader } from '../store/loader/actions'
 import { useHistory } from "react-router"
 
 function Register(props) {
@@ -96,6 +97,8 @@ function Register(props) {
 
     event.preventDefault()
 
+    props.loader(true)
+
     clearValid()
 
     const isValid = registerValidator(register)
@@ -121,12 +124,20 @@ function Register(props) {
       } catch (err) {
         if (err.status === 403) {
           showNotValidData(err.data)
+        } else {
+          props.showAlert({
+            type: 'danger',
+            message: 'Something went wrong, please try again!',
+            isShow: true,
+          })
         }
       }
 
     } else {
       showNotValidData(isValid)
     }
+
+    props.loader(false)
 
   }
 
@@ -209,7 +220,8 @@ function Register(props) {
 }
 
 const mapDispatchToProps = {
-  showAlert
+  showAlert,
+  loader
 }
 
 export default connect(null, mapDispatchToProps)(Register)
