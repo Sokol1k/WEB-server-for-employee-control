@@ -43,6 +43,18 @@ const index = async function (req, res) {
   }
 }
 
+const show = async function (req, res) {
+  try {
+
+    const employee = await Employee.findById(req.params.id)
+
+    res.send(employee)
+
+  } catch (err) {
+    res.status(500).send(err)
+  }
+}
+
 const create = async function (req, res) {
   try {
 
@@ -119,6 +131,7 @@ const destroy = async function (req, res) {
 
 module.exports = {
   index,
+  show,
   create,
   update,
   destroy
