@@ -1,5 +1,7 @@
 import React from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
+import Login from './pages/Login'
+import Register from './pages/Register'
 
 export const useRoutes = isAuthenticated => {
   if (isAuthenticated) {
@@ -21,10 +23,10 @@ export const useRoutes = isAuthenticated => {
     return (
       <Switch>
         <Route path='/login' exact>
-          Login
+          <Login />
         </Route>
         <Route path='/register' exact>
-          Register
+          <Register />
         </Route>
         <Redirect to='/login' />
       </Switch>
