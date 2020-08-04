@@ -8,7 +8,7 @@ router.post('/auth/login', auth.login)
 
 router.delete('/user', user.destroy)
 
-router.get('/employee', employee.index)
+router.get('/employee/:page?', employee.index)
 router.post('/employee', employee.create)
 router.post('/employee/:id', employee.update)
 router.delete('/employee/:id', employee.destroy)
