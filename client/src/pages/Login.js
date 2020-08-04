@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import loginValidator from '../validation/login'
 import { useService } from '../hooks/service'
+import { connect } from 'react-redux'
+import { showAlert } from '../store/alert/actions'
 
-function Login() {
+function Login(props) {
 
   const [login, setLogin] = useState({
     login: '',
@@ -77,7 +79,11 @@ function Login() {
 
       } catch (err) {
         if (err.status === 403) {
-          
+          props.showAlert({
+            type: 'danger',
+            message: err.data.message,
+            isShow: true,
+          })
         }
       }
 
@@ -133,4 +139,8 @@ function Login() {
   )
 }
 
-export default Login
+const mapDispatchToProps = {
+  showAlert
+}
+
+export default connect(null, mapDispatchToProps)(Login)

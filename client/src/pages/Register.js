@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
 import registerValidator from '../validation/register'
 import { useService } from '../hooks/service'
+import { connect } from 'react-redux'
+import { showAlert } from '../store/alert/actions'
+import { useHistory } from "react-router"
 
-function Register() {
+function Register(props) {
 
   const [register, setRegister] = useState({
     email: '',
@@ -12,6 +15,8 @@ function Register() {
   })
 
   const { request } = useService()
+
+  const history = useHistory()
 
   const [validation, setValidation] = useState({
     classLoginInput: '',
@@ -99,11 +104,19 @@ function Register() {
 
       try {
 
-        await request({
+        const data = await request({
           url: '/api/auth/register',
           method: 'POST',
           data: register
         })
+
+        props.showAlert({
+          type: 'success',
+          message: data.data.message,
+          isShow: true,
+        })
+
+        history.push("/login")
 
       } catch (err) {
         if (err.status === 403) {
@@ -195,4 +208,8 @@ function Register() {
   )
 }
 
-export default Register
+const mapDispatchToProps = {
+  showAlert
+}
+
+export default connect(null, mapDispatchToProps)(Register)
