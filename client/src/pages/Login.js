@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import loginValidator from '../validation/login'
-import { useService } from '../hooks/service'
 import { connect } from 'react-redux'
 import { showAlert } from '../store/alert/actions'
 import { loader } from '../store/loader/actions'
+import { login } from '../store/auth/actions'
+import axios from 'axios'
 
 function Login(props) {
 
@@ -11,8 +12,6 @@ function Login(props) {
     login: '',
     password: ''
   })
-
-  const { request } = useService()
 
   const changeHandler = event => {
     setLogin({ ...login, [event.target.name]: event.target.value })
@@ -74,17 +73,19 @@ function Login(props) {
 
       try {
 
-        await request({
+        const data = await axios({
           url: '/api/auth/login',
           method: 'POST',
           data: login
         })
 
+        props.login(data.data.token)
+
       } catch (err) {
-        if (err.status === 403) {
+        if (err.response.status === 403) {
           props.showAlert({
             type: 'danger',
-            message: err.data.message,
+            message: err.response.data.message,
             isShow: true,
           })
         } else {
@@ -152,7 +153,8 @@ function Login(props) {
 
 const mapDispatchToProps = {
   showAlert,
-  loader
+  loader,
+  login
 }
 
 export default connect(null, mapDispatchToProps)(Login)

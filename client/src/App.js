@@ -4,10 +4,11 @@ import { useRoutes } from './routes'
 import Navbar from './components/Navbar'
 import Alert from './components/Alert'
 import Loader from './components/Loader'
+import { connect } from 'react-redux'
 import './styles/app.scss'
 
-function App() {
-  const routes = useRoutes(false)
+function App(props) {
+  const routes = useRoutes(!!props.token)
   return (
     <BrowserRouter>
       <Loader />
@@ -20,4 +21,10 @@ function App() {
   );
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    token: state.auth.token,
+  }
+}
+
+export default connect(mapStateToProps, null)(App)

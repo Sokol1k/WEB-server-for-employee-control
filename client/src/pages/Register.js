@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import registerValidator from '../validation/register'
-import { useService } from '../hooks/service'
 import { connect } from 'react-redux'
 import { showAlert } from '../store/alert/actions'
 import { loader } from '../store/loader/actions'
 import { useHistory } from "react-router"
+import axios from 'axios'
 
 function Register(props) {
 
@@ -14,8 +14,6 @@ function Register(props) {
     password: '',
     confirmPassword: ''
   })
-
-  const { request } = useService()
 
   const history = useHistory()
 
@@ -107,7 +105,7 @@ function Register(props) {
 
       try {
 
-        const data = await request({
+        const data = await axios({
           url: '/api/auth/register',
           method: 'POST',
           data: register
@@ -122,8 +120,8 @@ function Register(props) {
         history.push("/login")
 
       } catch (err) {
-        if (err.status === 403) {
-          showNotValidData(err.data)
+        if (err.response.status === 403) {
+          showNotValidData(err.response.data)
         } else {
           props.showAlert({
             type: 'danger',
