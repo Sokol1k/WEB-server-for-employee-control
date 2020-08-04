@@ -8,19 +8,19 @@ const register = async function (req, res) {
 
     const { login, password, email } = req.body
 
-    const loginCheck = await User.findOne({ login })
-
-    if (loginCheck) {
-      return res.status(403).send({
-        login: "This login is not free!"
-      })
-    }
-
     const emailCheck = await User.findOne({ email })
 
     if (emailCheck) {
       return res.status(403).send({
         email: "This email is not free!"
+      })
+    }
+
+    const loginCheck = await User.findOne({ login })
+
+    if (loginCheck) {
+      return res.status(403).send({
+        login: "This login is not free!"
       })
     }
 
