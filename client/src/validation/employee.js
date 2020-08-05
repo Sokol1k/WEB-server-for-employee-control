@@ -80,7 +80,7 @@ const isContact = (contact) => {
 const isBirthday = (birthday) => {
   if (birthday) {
 
-    if (!validator.isDate(birthday)) {
+    if (!validator.isDate(moment(birthday).format('YYYY-MM-DD'))) {
       return 'Birthday is not a date!'
     }
 

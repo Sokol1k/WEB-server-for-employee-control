@@ -11,7 +11,7 @@ router.delete('/user', user.destroy)
 router.get('/employee/:page([0-9]+)?', employee.index)
 router.get('/employee/:id', employee.show)
 router.post('/employee', employee.create)
-router.post('/employee/:id', employee.update)
+router.put('/employee/:id', employee.update)
 router.delete('/employee/:id', employee.destroy)
 
 module.exports = router

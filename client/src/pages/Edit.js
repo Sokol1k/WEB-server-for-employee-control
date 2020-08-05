@@ -1,18 +1,20 @@
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import PhoneInput from 'react-phone-input-2'
+import employeeValidator from '../validation/employee'
+import { useParams } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { showAlert } from '../store/alert/actions'
 import { loader } from '../store/loader/actions'
-import employeeValidator from '../validation/employee'
 import { Link, useHistory } from 'react-router-dom'
+import moment from 'moment'
 import axios from 'axios'
 import 'react-phone-input-2/lib/style.css'
 
-function Create(props) {
+function Edit(props) {
 
   const history = useHistory()
 
-  const [create, setCreate] = useState({
+  const [update, setUpdate] = useState({
     name: '',
     surname: '',
     patronymic: '',
@@ -23,6 +25,40 @@ function Create(props) {
   })
 
   const [contact, setContact] = useState('')
+
+  const employeeId = useParams().id
+
+  const getEmpoyee = useCallback(async () => {
+
+    props.loader(true)
+
+    try {
+
+      const response = await axios({
+        url: `/api/employee/${employeeId}`,
+        method: "GET",
+        headers: { 'Authorization': `Bearer ${props.token}` },
+      })
+
+      setUpdate({
+        name: response.data.name,
+        surname: response.data.surname,
+        patronymic: response.data.patronymic,
+        gender: response.data.gender,
+        birthday: response.data.birthday,
+        position: response.data.position,
+        salary: response.data.salary
+      })
+
+      setContact(response.data.contact)
+
+    } catch (err) {
+
+    }
+
+    props.loader(false)
+
+  }, [setUpdate, setContact, props, employeeId])
 
   const [validation, setValidation] = useState({
     classNameInput: '',
@@ -163,8 +199,8 @@ function Create(props) {
   }
 
   const changeHandler = event => {
-    setCreate({
-      ...create,
+    setUpdate({
+      ...update,
       [event.target.name]: event.target.value
     })
   }
@@ -178,7 +214,7 @@ function Create(props) {
     clearValid()
 
     const data = {
-      ...create,
+      ...update,
       contact
     }
 
@@ -188,20 +224,32 @@ function Create(props) {
 
       try {
 
-        const response = await axios({
-          url: '/api/employee',
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${props.token}` },
-          data: data
-        })
+        try {
 
-        props.showAlert({
-          type: 'success',
-          message: response.data.message,
-          isShow: true,
-        })
+          const response = await axios({
+            url: `/api/employee/${employeeId}`,
+            method: 'PUT',
+            headers: { 'Authorization': `Bearer ${props.token}` },
+            data: data
+          })
 
-        history.push("/")
+          props.showAlert({
+            type: 'success',
+            message: response.data.message,
+            isShow: true,
+          })
+
+          history.push("/")
+
+        } catch (err) {
+
+          props.showAlert({
+            type: 'danger',
+            message: 'Something went wrong, please try again!',
+            isShow: true,
+          })
+
+        }
 
       } catch (err) {
 
@@ -223,6 +271,10 @@ function Create(props) {
 
   }
 
+  useEffect(() => {
+    getEmpoyee()
+  }, [getEmpoyee])
+
   return (
     <div className="row my-5">
       <div className="col col-lg-6 mx-auto">
@@ -235,7 +287,7 @@ function Create(props) {
         </div>
         <div className="card">
           <div className="card-header">
-            <h4 className="mb-0">Create</h4>
+            <h4 className="mb-0">Edit</h4>
           </div>
           <div className="card-body">
             <form onSubmit={handleSubmit}>
@@ -245,6 +297,7 @@ function Create(props) {
                   id="name"
                   name="name"
                   type="text"
+                  value={update.name}
                   className={`form-control ${validation.classNameInput}`}
                   placeholder="Name"
                   onChange={changeHandler}
@@ -259,6 +312,7 @@ function Create(props) {
                   id="surname"
                   name="surname"
                   type="text"
+                  value={update.surname}
                   className={`form-control ${validation.classSurnameInput}`}
                   placeholder="Surname"
                   onChange={changeHandler}
@@ -273,6 +327,7 @@ function Create(props) {
                   id="patronymic"
                   name="patronymic"
                   type="text"
+                  value={update.patronymic}
                   className={`form-control ${validation.classPatronymicInput}`}
                   placeholder="Patronymic"
                   onChange={changeHandler}
@@ -286,6 +341,7 @@ function Create(props) {
                 <select
                   id="gender"
                   name="gender"
+                  value={update.gender}
                   className={`custom-select ${validation.classGenderInput}`}
                   onChange={changeHandler}
                 >
@@ -315,6 +371,7 @@ function Create(props) {
                   id="birthday"
                   name="birthday"
                   type="date"
+                  value={moment(update.birthday).format('YYYY-MM-DD')}
                   className={`form-control ${validation.classBirthdayInput}`}
                   placeholder="Birthday"
                   onChange={changeHandler}
@@ -329,6 +386,7 @@ function Create(props) {
                   id="position"
                   name="position"
                   type="text"
+                  value={update.position}
                   className={`form-control ${validation.classPositionInput}`}
                   placeholder="Position"
                   onChange={changeHandler}
@@ -343,6 +401,7 @@ function Create(props) {
                   id="salary"
                   name="salary"
                   type="number"
+                  value={update.salary}
                   className={`form-control ${validation.classSalaryInput}`}
                   placeholder="Salary"
                   onChange={changeHandler}
@@ -351,7 +410,7 @@ function Create(props) {
                   {validation.salaryErrorMessage}
                 </div>
               </div>
-              <button type="submit" className="btn btn-primary">Create</button>
+              <button type="submit" className="btn btn-primary">Edit</button>
             </form>
           </div>
         </div>
@@ -371,4 +430,4 @@ const mapDispatchToProps = {
   loader
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Create)
+export default connect(mapStateToProps, mapDispatchToProps)(Edit)
