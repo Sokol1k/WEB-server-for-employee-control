@@ -3,6 +3,7 @@ import { Route, Switch, Redirect } from 'react-router-dom'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Home from './pages/Home'
+import Create from './pages/Create'
 
 export const useRoutes = isAuthenticated => {
   if (isAuthenticated) {
@@ -12,7 +13,7 @@ export const useRoutes = isAuthenticated => {
           <Home />
         </Route>
         <Route path='/create' exact>
-          Create
+          <Create />
         </Route>
         <Route path='/edit/:id'>
           Edit

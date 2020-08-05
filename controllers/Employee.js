@@ -35,6 +35,7 @@ const index = async function (req, res) {
     const employees = await Employee.find(search)
       .limit(amount)
       .skip(amount * (page - 1))
+      .sort([['created_at', -1]])
 
     const count = await Employee.find(search).count()
 
