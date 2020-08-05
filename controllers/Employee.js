@@ -62,7 +62,13 @@ const show = async function (req, res) {
     res.send(employee)
 
   } catch (err) {
-    res.status(500).send(err)
+    if (err.path === '_id') {
+      res.status(404).send({
+        message: 'There is no such employee!'
+      })
+    } else {
+      res.status(500).send(err)
+    }
   }
 }
 
@@ -113,7 +119,7 @@ const update = async function (req, res) {
 
   } catch (err) {
     if (err.path === '_id') {
-      res.status(400).send({
+      res.status(404).send({
         message: 'There is no such employee!'
       })
     } else {

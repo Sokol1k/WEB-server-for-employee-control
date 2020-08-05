@@ -121,13 +121,17 @@ function Register(props) {
 
       } catch (err) {
         if (err.response.status === 403) {
+
           showNotValidData(err.response.data)
+
         } else {
+
           props.showAlert({
             type: 'danger',
             message: 'Something went wrong, please try again!',
             isShow: true,
           })
+          
         }
       }
 

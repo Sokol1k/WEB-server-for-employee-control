@@ -83,22 +83,28 @@ function Login(props) {
 
       } catch (err) {
         if (err.response.status === 403) {
+
           props.showAlert({
             type: 'danger',
             message: err.response.data.message,
             isShow: true,
           })
+          
         } else {
+
           props.showAlert({
             type: 'danger',
             message: 'Something went wrong, please try again!',
             isShow: true,
           })
+
         }
       }
 
     } else {
+
       showNotValidData(isValid)
+
     }
 
     props.loader(false)
