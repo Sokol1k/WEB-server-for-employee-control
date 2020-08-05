@@ -4,6 +4,7 @@ import { useRoutes } from './routes'
 import Navbar from './components/Navbar'
 import Alert from './components/Alert'
 import Loader from './components/Loader'
+import Modal from './components/Modal'
 import { connect } from 'react-redux'
 import './styles/app.scss'
 
@@ -11,6 +12,7 @@ function App(props) {
   const routes = useRoutes(!!props.token)
   return (
     <BrowserRouter>
+      <Modal />
       <Loader />
       <Alert />
       <Navbar />

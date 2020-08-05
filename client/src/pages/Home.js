@@ -2,6 +2,9 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Pagination from '../components/Pagination'
+import { showAlert } from '../store/alert/actions'
+import { loader } from '../store/loader/actions'
+import { showModal } from '../store/modal/actions'
 import axios from 'axios'
 import moment from 'moment'
 import '../styles/home.scss'
@@ -50,9 +53,57 @@ function Home(props) {
       })
 
     } catch (error) {
-      console.log(error)
+
+      props.showAlert({
+        type: 'danger',
+        message: 'Something went wrong, please try again!',
+        isShow: true,
+      })
+
     }
   }, [params, page, props, setEmployee])
+
+  const destroyEmployee = async (id) => {
+
+    props.loader(true)
+
+    try {
+
+      const response = await axios({
+        url: `/api/employee/${id}`,
+        method: "DELETE",
+        headers: { 'Authorization': `Bearer ${props.token}` },
+      })
+
+      props.showAlert({
+        type: 'success',
+        message: response.data.message,
+        isShow: true,
+      })
+
+    } catch (err) {
+
+      props.showAlert({
+        type: 'danger',
+        message: 'Something went wrong, please try again!',
+        isShow: true,
+      })
+
+    }
+
+    props.loader(false)
+
+    getEmpoyees()
+
+  }
+
+  const openModal = (id, name, surname) => {
+    props.showModal({
+      isShow: true,
+      activationFunction: async () => await destroyEmployee(id),
+      message: `Are you sure you want to delete the user ${name} ${surname}?`
+    })
+  }
 
   useEffect(() => {
     getEmpoyees()
@@ -147,7 +198,7 @@ function Home(props) {
                           </svg>
                         </button>
                       </Link>
-                      <button type="button" className="btn btn-danger">
+                      <button type="button" className="btn btn-danger" onClick={() => openModal(item._id, item.name, item.surname)}>
                         <svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-trash-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                           <path fillRule="evenodd" d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z" />
                         </svg>
@@ -177,4 +228,10 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps, null)(Home)
+const mapDispatchToProps = {
+  showAlert,
+  loader,
+  showModal
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home)
