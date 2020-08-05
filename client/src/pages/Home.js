@@ -65,8 +65,6 @@ function Home(props) {
 
   const destroyEmployee = async (id) => {
 
-    props.loader(true)
-
     try {
 
       const response = await axios({
@@ -91,8 +89,6 @@ function Home(props) {
 
     }
 
-    props.loader(false)
-
     getEmpoyees()
 
   }
@@ -106,7 +102,9 @@ function Home(props) {
   }
 
   useEffect(() => {
+
     getEmpoyees()
+
   }, [getEmpoyees, params, page])
 
   return (

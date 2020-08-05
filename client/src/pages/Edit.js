@@ -30,8 +30,6 @@ function Edit(props) {
 
   const getEmpoyee = useCallback(async () => {
 
-    props.loader(true)
-
     try {
 
       const response = await axios({
@@ -54,9 +52,13 @@ function Edit(props) {
 
     } catch (err) {
 
-    }
+      props.showAlert({
+        type: 'danger',
+        message: 'Something went wrong, please try again!',
+        isShow: true,
+      })
 
-    props.loader(false)
+    }
 
   }, [setUpdate, setContact, props, employeeId])
 
