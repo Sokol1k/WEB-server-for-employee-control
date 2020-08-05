@@ -2,13 +2,14 @@ import React from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import Home from './pages/Home'
 
 export const useRoutes = isAuthenticated => {
   if (isAuthenticated) {
     return (
       <Switch>
         <Route path='/' exact>
-          Home
+          <Home />
         </Route>
         <Route path='/create' exact>
           Create

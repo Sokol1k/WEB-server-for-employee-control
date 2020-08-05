@@ -3,7 +3,7 @@ const Employee = require('../models/Employee')
 const index = async function (req, res) {
   try {
 
-    const amount = 3
+    const amount = 10
     const page = +req.params.page || 1
 
     const search = {}
@@ -36,7 +36,17 @@ const index = async function (req, res) {
       .limit(amount)
       .skip(amount * (page - 1))
 
-    res.send(employees)
+    const count = await Employee.find(search).count()
+
+    const amountPage = Math.ceil(count / amount)
+
+    res.send({
+      items: employees,
+      currentPage: page,
+      amountPage: amountPage,
+      prevPage: (page - 1 !== 0) ? page - 1 : null,
+      nextPage: (page + 1 <= amountPage) ? page + 1 : null
+    })
 
   } catch (err) {
     res.status(500).send(err)
