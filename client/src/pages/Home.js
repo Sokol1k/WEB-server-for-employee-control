@@ -31,6 +31,7 @@ function Home(props) {
   const [page, setPage] = useState(1)
 
   const changeHandler = event => {
+    setPage(1)
     setParams({ ...params, [event.target.name]: event.target.value })
   }
 
