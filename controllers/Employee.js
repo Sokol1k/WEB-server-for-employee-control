@@ -41,6 +41,14 @@ const index = async function (req, res) {
 
     const amountPage = Math.ceil(count / amount)
 
+    if (amountPage || page > 1) {
+      if (page < 0 || page > amountPage) {
+        return res.status(404).send({
+          message: "Page not found!"
+        })
+      }
+    }
+
     res.send({
       items: employees,
       currentPage: page,
@@ -134,7 +142,7 @@ const destroy = async function (req, res) {
     const employee = await Employee.deleteOne({ _id: req.params.id })
 
     if (!employee.deletedCount) {
-      res.status(400).send({
+      res.status(404).send({
         message: 'There is no such employee!'
       })
     } else {
