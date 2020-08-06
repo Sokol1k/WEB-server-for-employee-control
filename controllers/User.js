@@ -6,7 +6,7 @@ const destroy = async function (req, res) {
     const user = await User.deleteOne({ _id: req.user._id })
 
     if (!user.deletedCount) {
-      res.status(400).send({
+      res.status(404).send({
         message: 'No such user exists!'
       })
     } else {
